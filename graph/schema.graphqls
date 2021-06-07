@@ -1,0 +1,26 @@
+type User {
+  _id: String!
+  name: String!
+  jobtitle: String!
+  age: Int!
+  city: String!
+  hobbies: [String]
+}
+
+type Query {
+  user(_id: String!): User!
+  users: [User]!
+}
+
+input NewUser {
+  name: String!
+  jobtitle: String!
+  age: Int!
+  city: String!
+}
+
+type Mutation {
+  createUser(input: NewUser): {
+    _id: String!
+  }!
+}
