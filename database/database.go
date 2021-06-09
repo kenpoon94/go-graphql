@@ -57,9 +57,7 @@ func Connect() *DB {
 
 func (db* DB) Save(input *model.NewUser) *model.User{
 	collection := db.client.Database(database).Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	res, err := collection.InsertOne(ctx, input)
+	res, err := collection.InsertOne(context.Background(), input)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -75,9 +73,7 @@ func (db* DB) FindById(ID string) *model.User{
 		log.Fatal(err)
 	}
 	collection := db.client.Database(database).Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	res := collection.FindOne(ctx, bson.M{"_id": ObjectID})
+	res := collection.FindOne(context.Background(), bson.M{"_id": ObjectID})
 	user := model.User{}
 	res.Decode(&user)
 	return &user
@@ -87,7 +83,7 @@ func (db* DB) All() []*model.User{
 	collection := db.client.Database(database).Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	cur, err := collection.Find(ctx, bson.D{})
+	cur, err := collection.Find(context.Background(), bson.D{})
 	if err != nil {
 		log.Fatal(err)
 	}
