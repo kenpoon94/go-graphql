@@ -15,7 +15,7 @@ import (
 var db = database.Connect()
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser) (*model.User, error) {
-	return db.Save(input), nil
+	return db.CreateUser(input), nil
 }
 
 func (r *mutationResolver) CreateAccount(ctx context.Context, input *model.NewAccount) (*model.Account, error) {
@@ -23,11 +23,11 @@ func (r *mutationResolver) CreateAccount(ctx context.Context, input *model.NewAc
 }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	return db.FindById(id), nil
+	return db.User(id), nil
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	return db.All(), nil
+	return db.Users(), nil
 }
 
 func (r *queryResolver) Account(ctx context.Context, id string) (*model.Account, error) {
