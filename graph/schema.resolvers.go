@@ -14,7 +14,7 @@ import (
 var db = database.Connect()
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser) (*model.User, error) {
- 	return	db.Save(input), nil
+	return db.Save(input), nil
 }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {

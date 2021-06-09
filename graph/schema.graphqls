@@ -4,7 +4,7 @@ type User {
   jobtitle: String!
   age: Int!
   city: String!
-  hobbies: [String]
+  hobbies: [String]!
 }
 
 type Query {
@@ -17,10 +17,9 @@ input NewUser {
   jobtitle: String!
   age: Int!
   city: String!
+  hobbies: [String]!
 }
 
 type Mutation {
-  createUser(input: NewUser): {
-    _id: String!
-  }!
+  createUser(input: NewUser): User!
 }

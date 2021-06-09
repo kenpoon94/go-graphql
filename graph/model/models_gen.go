@@ -3,14 +3,15 @@
 package model
 
 type NewUser struct {
-	Name     string `json:"name"`
-	Jobtitle string `json:"jobtitle"`
-	Age      int    `json:"age"`
-	City     string `json:"city"`
+	Name     string    `json:"name"`
+	Jobtitle string    `json:"jobtitle"`
+	Age      int       `json:"age"`
+	City     string    `json:"city"`
+	Hobbies  []*string `json:"hobbies"`
 }
 
 type User struct {
-	ID       string    `json:"_id" bson:"_id"`
+	ID       string    `json:"_id"`
 	Name     string    `json:"name"`
 	Jobtitle string    `json:"jobtitle"`
 	Age      int       `json:"age"`
