@@ -2,6 +2,19 @@
 
 package model
 
+type Account struct {
+	ID        string `json:"_id"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	UserID    string `json:"userId"`
+	CreatedOn string `json:"createdOn"`
+}
+
+type NewAccount struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type NewUser struct {
 	Name     string    `json:"name"`
 	Jobtitle string    `json:"jobtitle"`

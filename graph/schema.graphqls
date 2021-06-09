@@ -7,9 +7,19 @@ type User {
   hobbies: [String]!
 }
 
+type Account {
+  _id: String!
+  email: String!
+  password: String!
+  userId: String!
+  createdOn: String!
+}
+
 type Query {
   user(_id: String!): User!
   users: [User]!
+  account(_id: String!): Account!
+  accounts: [Account]!
 }
 
 input NewUser {
@@ -20,6 +30,12 @@ input NewUser {
   hobbies: [String]!
 }
 
+input NewAccount {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   createUser(input: NewUser): User!
+  createAccount(input: NewAccount): Account!
 }
