@@ -11,8 +11,9 @@ type Account struct {
 }
 
 type NewAccount struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email     string  `json:"email"`
+	Password  string  `json:"password"`
+	CreatedOn *string `json:"createdOn"`
 }
 
 type NewUser struct {

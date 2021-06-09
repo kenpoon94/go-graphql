@@ -33,6 +33,7 @@ input NewUser {
 input NewAccount {
   email: String!
   password: String!
+  createdOn: String
 }
 
 type Mutation {

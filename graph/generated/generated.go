@@ -337,6 +337,7 @@ input NewUser {
 input NewAccount {
   email: String!
   password: String!
+  createdOn: String
 }
 
 type Mutation {
@@ -2263,6 +2264,14 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
 			it.Password, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "createdOn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdOn"))
+			it.CreatedOn, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
