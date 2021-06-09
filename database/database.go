@@ -81,21 +81,13 @@ func (db* DB) FindById(ID string) *model.User{
 
 func (db* DB) All() []*model.User{
 	collection := db.client.Database(database).Collection("users")
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
 	cur, err := collection.Find(context.Background(), bson.D{})
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	var users []*model.User
-	for cur.Next(ctx){
-		var user *model.User
-		err := cur.Decode(&user)
-		if err != nil {
-			log.Fatal(err)
-		}
-		users = append(users, user)
+	if err = cur.All(context.Background(), &users); err != nil {
+		log.Fatal(err)
 	}
 	return users
 }
