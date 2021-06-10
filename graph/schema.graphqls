@@ -8,6 +8,8 @@ type User {
   age: Int!
   city: String!
   hobbies: [String]!
+  createdOn: String!
+  updatedOn: String!
 }
 
 type Account {
@@ -16,12 +18,13 @@ type Account {
   password: String!
   userId: String!
   createdOn: String!
+  updatedOn: String!
 }
 
 type Query {
-  user(_id: String!): User!
+  user(_id: String!): User
   users: [User]!
-  account(_id: String!): Account!
+  account(_id: String!): Account
   accounts: [Account]!
 }
 
@@ -31,12 +34,15 @@ input NewUser {
   age: Int!
   city: String!
   hobbies: [String]!
+  createdOn: String
+  updatedOn: String
 }
 
 input NewAccount {
   email: String!
   password: String!
   createdOn: String
+  updatedOn: String
 }
 
 type Mutation {

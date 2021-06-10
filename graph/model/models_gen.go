@@ -8,27 +8,33 @@ type Account struct {
 	Password  string `json:"password"`
 	UserID    string `json:"userId"`
 	CreatedOn string `json:"createdOn"`
+	UpdatedOn string `json:"updatedOn"`
 }
 
 type NewAccount struct {
 	Email     string  `json:"email"`
 	Password  string  `json:"password"`
 	CreatedOn *string `json:"createdOn"`
+	UpdatedOn *string `json:"updatedOn"`
 }
 
 type NewUser struct {
-	Name     string    `json:"name"`
-	Jobtitle string    `json:"jobtitle"`
-	Age      int       `json:"age"`
-	City     string    `json:"city"`
-	Hobbies  []*string `json:"hobbies"`
+	Name      string    `json:"name"`
+	Jobtitle  string    `json:"jobtitle"`
+	Age       int       `json:"age"`
+	City      string    `json:"city"`
+	Hobbies   []*string `json:"hobbies"`
+	CreatedOn *string   `json:"createdOn"`
+	UpdatedOn *string   `json:"updatedOn"`
 }
 
 type User struct {
-	ID       string    `json:"_id"`
-	Name     string    `json:"name"`
-	Jobtitle string    `json:"jobtitle"`
-	Age      int       `json:"age"`
-	City     string    `json:"city"`
-	Hobbies  []*string `json:"hobbies"`
+	ID        string    `json:"_id"`
+	Name      string    `json:"name"`
+	Jobtitle  string    `json:"jobtitle"`
+	Age       int       `json:"age"`
+	City      string    `json:"city"`
+	Hobbies   []*string `json:"hobbies"`
+	CreatedOn string    `json:"createdOn"`
+	UpdatedOn string    `json:"updatedOn"`
 }

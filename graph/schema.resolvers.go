@@ -5,6 +5,7 @@ package graph
 
 import (
 	"context"
+	"time"
 
 	"github.com/kenpoon94/go-graphql/database"
 	"github.com/kenpoon94/go-graphql/graph/generated"
@@ -14,11 +15,28 @@ import (
 var db = database.Connect()
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser) (*model.User, error) {
-	return db.CreateUser(input), nil
+	currentTime := time.Now().String()
+	newUser := &model.NewUser{
+		Name: input.Name,
+		Jobtitle: input.Jobtitle,
+		City: input.City,
+		Age: input.Age,
+		Hobbies: input.Hobbies,
+		CreatedOn: &currentTime,
+		UpdatedOn: &currentTime,
+	}
+	return db.CreateUser(newUser), nil
 }
 
 func (r *mutationResolver) CreateAccount(ctx context.Context, input *model.NewAccount) (*model.Account, error) {
-	return db.CreateAccount(input), nil
+	currentTime := time.Now().String()
+	newAccount := &model.NewAccount{
+		Email:     input.Email,
+		Password:  input.Password,
+		CreatedOn: &currentTime,
+		UpdatedOn: &currentTime,
+	}
+	return db.CreateAccount(newAccount), nil
 }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
