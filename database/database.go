@@ -6,7 +6,6 @@ import (
 	"log"
 	"time"
 
-	"github.com/kenpoon94/go-graphql/graph/model"
 	"github.com/kenpoon94/go-graphql/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -55,39 +54,30 @@ func Connect() *DB {
 
 }
 
-func (db* DB) Save(input *model.NewUser) *model.User{
-	collection := db.client.Database(database).Collection("users")
-	res, err := collection.InsertOne(context.Background(), input)
+func Save(db* DB, class interface{}, col string) *mongo.InsertOneResult{
+	collection := db.client.Database(database).Collection(col)
+	res, err := collection.InsertOne(context.Background(), class)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &model.User{
-		ID: res.InsertedID.(primitive.ObjectID).Hex(),
-	}
+	return res
 }
 
-
-func (db* DB) FindById(ID string) *model.User{
-	ObjectID, err := primitive.ObjectIDFromHex(ID)
+func FindById(db* DB, col string, id string) *mongo.SingleResult{
+	ObjectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		log.Fatal(err)
 	}
-	collection := db.client.Database(database).Collection("users")
+	collection := db.client.Database(database).Collection(col)
 	res := collection.FindOne(context.Background(), bson.M{"_id": ObjectID})
-	user := model.User{}
-	res.Decode(&user)
-	return &user
+	return res 
 }
 
-func (db* DB) All() []*model.User{
-	collection := db.client.Database(database).Collection("users")
+func All(db* DB, col string) mongo.Cursor{
+	collection := db.client.Database(database).Collection(col)
 	cur, err := collection.Find(context.Background(), bson.D{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	var users []*model.User
-	if err = cur.All(context.Background(), &users); err != nil {
-		log.Fatal(err)
-	}
-	return users
+	return *cur
 }

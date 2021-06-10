@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/kenpoon94/go-graphql/database"
 	"github.com/kenpoon94/go-graphql/graph/generated"
@@ -15,27 +14,27 @@ import (
 var db = database.Connect()
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser) (*model.User, error) {
-	return db.Save(input), nil
+	return db.CreateUser(input), nil
 }
 
 func (r *mutationResolver) CreateAccount(ctx context.Context, input *model.NewAccount) (*model.Account, error) {
-	panic(fmt.Errorf("not implemented"))
+	return db.CreateAccount(input), nil
 }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	return db.FindById(id), nil
+	return db.User(id), nil
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	return db.All(), nil
+	return db.Users(), nil
 }
 
 func (r *queryResolver) Account(ctx context.Context, id string) (*model.Account, error) {
-	panic(fmt.Errorf("not implemented"))
+	return db.Account(id), nil
 }
 
 func (r *queryResolver) Accounts(ctx context.Context) ([]*model.Account, error) {
-	panic(fmt.Errorf("not implemented"))
+	return db.Accounts(), nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

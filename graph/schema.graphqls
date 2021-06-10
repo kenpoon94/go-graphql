@@ -1,3 +1,6 @@
+
+scalar Timestamp
+
 type User {
   _id: String!
   name: String!
@@ -33,6 +36,7 @@ input NewUser {
 input NewAccount {
   email: String!
   password: String!
+  createdOn: String
 }
 
 type Mutation {
