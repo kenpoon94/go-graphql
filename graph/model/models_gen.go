@@ -28,6 +28,23 @@ type NewUser struct {
 	UpdatedOn *string   `json:"updatedOn"`
 }
 
+type UpdateAccount struct {
+	ID        string  `json:"_id"`
+	Email     *string `json:"email"`
+	Password  *string `json:"password"`
+	UpdatedOn *string `json:"updatedOn"`
+}
+
+type UpdateUser struct {
+	ID        string    `json:"_id"`
+	Name      *string   `json:"name"`
+	Jobtitle  *string   `json:"jobtitle"`
+	Age       *int      `json:"age"`
+	City      *string   `json:"city"`
+	Hobbies   []*string `json:"hobbies"`
+	UpdatedOn *string   `json:"updatedOn"`
+}
+
 type User struct {
 	ID        string    `json:"_id"`
 	Name      string    `json:"name"`

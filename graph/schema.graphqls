@@ -38,6 +38,16 @@ input NewUser {
   updatedOn: String
 }
 
+input UpdateUser {
+  _id: String!
+  name: String
+  jobtitle: String
+  age: Int
+  city: String
+  hobbies: [String]
+  updatedOn: String
+}
+
 input NewAccount {
   email: String!
   password: String!
@@ -45,7 +55,16 @@ input NewAccount {
   updatedOn: String
 }
 
+input UpdateAccount {
+  _id: String!
+  email: String
+  password: String
+  updatedOn: String
+}
+
 type Mutation {
   createUser(input: NewUser): User!
   createAccount(input: NewAccount): Account!
+  updateUser(input: UpdateUser): User!
+  updateAccount(input: UpdateAccount): Account!
 }
