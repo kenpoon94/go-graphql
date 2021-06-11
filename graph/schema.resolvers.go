@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
@@ -83,7 +82,30 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input *model.UpdateUs
 }
 
 func (r *mutationResolver) UpdateAccount(ctx context.Context, input *model.UpdateAccount) (*model.Account, error) {
-	panic(fmt.Errorf("not implemented"))
+	
+	update := false
+	var fields = bson.M{}
+	if !primitive.IsValidObjectID(input.ID) {
+		graphql.AddErrorf(ctx, "ID is not a valid primitive.ObjectID")
+	}
+
+	if input.Email != nil {
+		fields["email"] = input.Email
+		update = true
+	}
+	if input.Password != nil {
+		fields["password"] = input.Password
+		update = true
+	}
+
+	if !update {
+		graphql.AddErrorf(ctx, "No fields present for updating")
+		return nil, nil
+	} else {
+		fields["updatedon"] = time.Now().String()
+	}
+	
+	return db.UpdateAccount(input.ID, fields), nil
 }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
