@@ -25,11 +25,9 @@ func (db *DB) Account(id string) *model.Account {
 	return &account
 }
 
-func (db *DB) CreateAccount(input *model.NewAccount) *model.Account {
-	res := Save(db, "accounts", input )
-	return &model.Account{
-		ID: res.InsertedID.(primitive.ObjectID).Hex(),
-	}
+func (db *DB) CreateAccount(fields bson.M) string{
+	res := Save(db, "accounts", fields)
+	return res.InsertedID.(primitive.ObjectID).Hex()
 }
 
 func (db *DB) UpdateAccount(id string, fields bson.M) *model.Account{

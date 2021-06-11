@@ -17,6 +17,7 @@ import (
 
 var db = database.Connect()
 
+// Internal call only 
 func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser) (*model.User, error) {
 	currentTime := time.Now().String()
 	newUser := &model.NewUser{
@@ -33,17 +34,32 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser)
 
 func (r *mutationResolver) CreateAccount(ctx context.Context, input *model.NewAccount) (*model.Account, error) {
 	currentTime := time.Now().String()
-	newAccount := &model.NewAccount{
-		Email:     input.Email,
-		Password:  input.Password,
+	fields := bson.M{
+		"email": input.Email,
+		"password": input.Password,
+		"createdon": &currentTime,
+		"updatedon": &currentTime,
+	}
+
+	accountId := db.CreateAccount(fields)
+
+	newUser := &model.NewUser{
+		Name:      input.Name,
+		Jobtitle:  input.Jobtitle,
+		City:      input.City,
+		Age:       input.Age,
+		Hobbies:   input.Hobbies,
+		AccountID: &accountId,
 		CreatedOn: &currentTime,
 		UpdatedOn: &currentTime,
 	}
-	return db.CreateAccount(newAccount), nil
+	db.CreateUser(newUser)
+	return &model.Account{
+		ID: accountId,
+	}, nil
 }
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, input *model.UpdateUser) (*model.User, error) {
-
 	update := false
 	var fields = bson.M{}
 	if !primitive.IsValidObjectID(input.ID) {
@@ -77,12 +93,11 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input *model.UpdateUs
 	} else {
 		fields["updatedon"] = time.Now().String()
 	}
-	
+
 	return db.UpdateUser(input.ID, fields), nil
 }
 
 func (r *mutationResolver) UpdateAccount(ctx context.Context, input *model.UpdateAccount) (*model.Account, error) {
-	
 	update := false
 	var fields = bson.M{}
 	if !primitive.IsValidObjectID(input.ID) {
@@ -104,7 +119,7 @@ func (r *mutationResolver) UpdateAccount(ctx context.Context, input *model.Updat
 	} else {
 		fields["updatedon"] = time.Now().String()
 	}
-	
+
 	return db.UpdateAccount(input.ID, fields), nil
 }
 
@@ -135,3 +150,4 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+

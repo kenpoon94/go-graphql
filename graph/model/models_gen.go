@@ -12,10 +12,15 @@ type Account struct {
 }
 
 type NewAccount struct {
-	Email     string  `json:"email"`
-	Password  string  `json:"password"`
-	CreatedOn *string `json:"createdOn"`
-	UpdatedOn *string `json:"updatedOn"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	Name      string    `json:"name"`
+	Jobtitle  string    `json:"jobtitle"`
+	Age       int       `json:"age"`
+	City      string    `json:"city"`
+	Hobbies   []*string `json:"hobbies"`
+	CreatedOn *string   `json:"createdOn"`
+	UpdatedOn *string   `json:"updatedOn"`
 }
 
 type NewUser struct {
@@ -24,6 +29,7 @@ type NewUser struct {
 	Age       int       `json:"age"`
 	City      string    `json:"city"`
 	Hobbies   []*string `json:"hobbies"`
+	AccountID *string   `json:"accountId"`
 	CreatedOn *string   `json:"createdOn"`
 	UpdatedOn *string   `json:"updatedOn"`
 }
@@ -52,6 +58,7 @@ type User struct {
 	Age       int       `json:"age"`
 	City      string    `json:"city"`
 	Hobbies   []*string `json:"hobbies"`
+	AccountID *string   `json:"accountId"`
 	CreatedOn string    `json:"createdOn"`
 	UpdatedOn string    `json:"updatedOn"`
 }

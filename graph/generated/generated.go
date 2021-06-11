@@ -67,6 +67,7 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
+		AccountID func(childComplexity int) int
 		Age       func(childComplexity int) int
 		City      func(childComplexity int) int
 		CreatedOn func(childComplexity int) int
@@ -234,6 +235,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Users(childComplexity), true
 
+	case "User.accountId":
+		if e.complexity.User.AccountID == nil {
+			break
+		}
+
+		return e.complexity.User.AccountID(childComplexity), true
+
 	case "User.age":
 		if e.complexity.User.Age == nil {
 			break
@@ -364,6 +372,7 @@ type User {
   age: Int!
   city: String!
   hobbies: [String]!
+  accountId: String
   createdOn: String!
   updatedOn: String!
 }
@@ -390,6 +399,7 @@ input NewUser {
   age: Int!
   city: String!
   hobbies: [String]!
+  accountId: String
   createdOn: String
   updatedOn: String
 }
@@ -404,9 +414,14 @@ input UpdateUser {
   updatedOn: String
 }
 
-input NewAccount {
+input NewAccount { 
   email: String!
   password: String!
+  name: String!
+  jobtitle: String!
+  age: Int!
+  city: String!
+  hobbies: [String]!
   createdOn: String
   updatedOn: String
 }
@@ -423,9 +438,7 @@ type Mutation {
   createAccount(input: NewAccount): Account!
   updateUser(input: UpdateUser): User!
   updateAccount(input: UpdateAccount): Account!
-}
-
-`, BuiltIn: false},
+}`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
@@ -1381,6 +1394,38 @@ func (ec *executionContext) _User_hobbies(ctx context.Context, field graphql.Col
 	res := resTmp.([]*string)
 	fc.Result = res
 	return ec.marshalNString2ᚕᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _User_accountId(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AccountID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_createdOn(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
@@ -2562,6 +2607,46 @@ func (ec *executionContext) unmarshalInputNewAccount(ctx context.Context, obj in
 			if err != nil {
 				return it, err
 			}
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "jobtitle":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("jobtitle"))
+			it.Jobtitle, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "age":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("age"))
+			it.Age, err = ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "city":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("city"))
+			it.City, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "hobbies":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hobbies"))
+			it.Hobbies, err = ec.unmarshalNString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "createdOn":
 			var err error
 
@@ -2627,6 +2712,14 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hobbies"))
 			it.Hobbies, err = ec.unmarshalNString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "accountId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("accountId"))
+			it.AccountID, err = ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2991,6 +3084,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "accountId":
+			out.Values[i] = ec._User_accountId(ctx, field, obj)
 		case "createdOn":
 			out.Values[i] = ec._User_createdOn(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
