@@ -22,7 +22,6 @@ type DB struct {
 	client *mongo.Client
 }
 
-
 func Connect() *DB {
 
 	// Set client options
@@ -39,7 +38,6 @@ func Connect() *DB {
 	defer cancel()
 	err = client.Ping(ctx, readpref.Primary())
 
-
 	// Check the connection
 	if err != nil {
 		log.Fatal(err)
@@ -49,12 +47,11 @@ func Connect() *DB {
 
 	return &DB{
 		client: client,
-
 	}
 
 }
 
-func Save(db* DB, class interface{}, col string) *mongo.InsertOneResult{
+func Save(db *DB, col string, class interface{}) *mongo.InsertOneResult {
 	collection := db.client.Database(database).Collection(col)
 	res, err := collection.InsertOne(context.Background(), class)
 	if err != nil {
@@ -63,21 +60,27 @@ func Save(db* DB, class interface{}, col string) *mongo.InsertOneResult{
 	return res
 }
 
-func FindById(db* DB, col string, id string) *mongo.SingleResult{
-	ObjectID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		log.Fatal(err)
-	}
+func FindById(db *DB, col string, id string) *mongo.SingleResult {
+	ObjectID, _ := primitive.ObjectIDFromHex(id)
 	collection := db.client.Database(database).Collection(col)
 	res := collection.FindOne(context.Background(), bson.M{"_id": ObjectID})
-	return res 
+	return res
 }
 
-func All(db* DB, col string) mongo.Cursor{
+func All(db *DB, col string) mongo.Cursor {
 	collection := db.client.Database(database).Collection(col)
 	cur, err := collection.Find(context.Background(), bson.D{})
 	if err != nil {
 		log.Fatal(err)
 	}
 	return *cur
+}
+
+func UpdateById(db *DB, col string, id string,  fields bson.M) {
+	ObjectId, _ := primitive.ObjectIDFromHex(id) 
+	collection := db.client.Database(database).Collection(col)
+	_ , err := collection.UpdateByID(context.Background(), ObjectId, bson.M{"$set":fields})
+	if err != nil {
+		log.Fatal(err)
+	}
 }

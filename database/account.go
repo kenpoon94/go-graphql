@@ -25,7 +25,7 @@ func (db *DB) Account(id string) *model.Account {
 }
 
 func (db *DB) CreateAccount(input *model.NewAccount) *model.Account {
-	res := Save(db, input, "accounts")
+	res := Save(db, "accounts", input )
 	return &model.Account{
 		ID: res.InsertedID.(primitive.ObjectID).Hex(),
 	}
