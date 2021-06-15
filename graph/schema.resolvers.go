@@ -5,94 +5,28 @@ package graph
 
 import (
 	"context"
-	"time"
 
-	"github.com/99designs/gqlgen/graphql"
 	"github.com/kenpoon94/go-graphql/database"
 	"github.com/kenpoon94/go-graphql/graph/generated"
 	"github.com/kenpoon94/go-graphql/graph/model"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var db = database.Connect()
 
 func (r *mutationResolver) CreateAccount(ctx context.Context, input *model.NewAccount) (*model.Account, error) {
-	accountId := db.CreateAccount(input)
-	return &model.Account{
-		ID: accountId,
-	}, nil
+	return db.CreateAccount(input), nil
 }
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, input *model.UpdateUser) (*model.User, error) {
-	update := false
-	fields := bson.M{}
-	if !primitive.IsValidObjectID(input.ID) {
-		graphql.AddErrorf(ctx, "ID is not a valid primitive.ObjectID")
-	}
-
-	if input.Name != nil {
-		fields["name"] = input.Name
-		update = true
-	}
-	if input.Age != nil {
-		fields["age"] = input.Age
-		update = true
-	}
-	if input.Jobtitle != nil {
-		fields["jobtitle"] = input.Jobtitle
-		update = true
-	}
-	if input.City != nil {
-		fields["city"] = input.City
-		update = true
-	}
-	if input.Hobbies != nil {
-		fields["hobbies"] = input.Hobbies
-		update = true
-	}
-
-	if !update {
-		graphql.AddErrorf(ctx, "No fields present for updating")
-		return nil, nil
-	} else {
-		fields["updatedon"] = time.Now().String()
-	}
-
-	return db.UpdateUser(input.ID, fields), nil
+	return db.UpdateUser(ctx, input), nil
 }
 
 func (r *mutationResolver) UpdateAccount(ctx context.Context, input *model.UpdateAccount) (*model.Account, error) {
-	update := false
-	fields := bson.M{}
-	if !primitive.IsValidObjectID(input.ID) {
-		graphql.AddErrorf(ctx, "ID is not a valid primitive.ObjectID")
-	}
-
-	if input.Email != nil {
-		fields["email"] = input.Email
-		update = true
-	}
-	if input.Password != nil {
-		fields["password"] = input.Password
-		update = true
-	}
-
-	if !update {
-		graphql.AddErrorf(ctx, "No fields present for updating")
-		return nil, nil
-	} else {
-		fields["updatedon"] = time.Now().String()
-	}
-
-	return db.UpdateAccount(input.ID, fields), nil
+	return db.UpdateAccount(ctx, input), nil
 }
 
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
-	if !primitive.IsValidObjectID(id) {
-		graphql.AddErrorf(ctx, "ID is not a valid primitive.ObjectID")
-	}
-	return db.User(id), nil
+	return db.User(ctx, id), nil
 }
 
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
@@ -100,7 +34,7 @@ func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
 }
 
 func (r *queryResolver) Account(ctx context.Context, id string) (*model.Account, error) {
-	return db.Account(id), nil
+	return db.Account(ctx, id), nil
 }
 
 func (r *queryResolver) Accounts(ctx context.Context) ([]*model.Account, error) {

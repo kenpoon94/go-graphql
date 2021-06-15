@@ -3,7 +3,7 @@
 package model
 
 type Account struct {
-	ID        string `json:"_id"`
+	ID        string `json:"_id" bson:"_id"`
 	Email     string `json:"email"`
 	Password  string `json:"password"`
 	UserID    string `json:"userId"`
