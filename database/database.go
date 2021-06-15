@@ -14,22 +14,22 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-var host = utils.GetEnvVariable("MONGODB_HOST")
-var port = utils.GetEnvVariable("MONGODB_PORT")
-var database = utils.GetEnvVariable("MONGODB_DATABASE")
+var (
+	host     = utils.GetEnvVariable("MONGODB_HOST")
+	port     = utils.GetEnvVariable("MONGODB_PORT")
+	database = utils.GetEnvVariable("MONGODB_DATABASE")
+)
 
 type DB struct {
 	client *mongo.Client
 }
 
 func Connect() *DB {
-
 	// Set client options
 	clientOptions := options.Client().ApplyURI("mongodb://" + host + ":" + port)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), clientOptions)
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -48,7 +48,6 @@ func Connect() *DB {
 	return &DB{
 		client: client,
 	}
-
 }
 
 func Save(db *DB, col string, class interface{}) *mongo.InsertOneResult {
@@ -57,6 +56,12 @@ func Save(db *DB, col string, class interface{}) *mongo.InsertOneResult {
 	if err != nil {
 		log.Fatal(err)
 	}
+	return res
+}
+
+func Find(db *DB, col string, fields bson.M) *mongo.SingleResult {
+	collection := db.client.Database(database).Collection(col)
+	res := collection.FindOne(context.Background(), fields)
 	return res
 }
 
@@ -76,10 +81,10 @@ func All(db *DB, col string) mongo.Cursor {
 	return *cur
 }
 
-func UpdateById(db *DB, col string, id string,  fields bson.M) {
-	ObjectId, _ := primitive.ObjectIDFromHex(id) 
+func UpdateById(db *DB, col string, id string, fields bson.M) {
+	ObjectId, _ := primitive.ObjectIDFromHex(id)
 	collection := db.client.Database(database).Collection(col)
-	_ , err := collection.UpdateByID(context.Background(), ObjectId, bson.M{"$set":fields})
+	_, err := collection.UpdateByID(context.Background(), ObjectId, bson.M{"$set": fields})
 	if err != nil {
 		log.Fatal(err)
 	}

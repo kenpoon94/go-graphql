@@ -7,6 +7,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/kenpoon94/go-graphql/graph/model"
+	"github.com/kenpoon94/go-graphql/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -30,11 +31,23 @@ func (db *DB) Account(ctx context.Context, id string) *model.Account {
 	return &account
 }
 
-func (db *DB) CreateAccount(input *model.NewAccount) *model.Account {
+func (db *DB) CreateAccount(ctx context.Context, input *model.NewAccount) *model.Account {
+	accountExist := Find(db, "accounts", bson.M{"email": input.Email})
+	account := model.Account{}
+	accountExist.Decode(&account)
+	if account.Email == input.Email {
+		graphql.AddErrorf(ctx, "Email is already used")
+		return &model.Account{}
+	}
+
 	currentTime := time.Now().String()
+	hashPassword, err := utils.HashPassword(input.Password)
+	if err != nil {
+		log.Fatalf("Unexpected error when hashing password")
+	}
 	newAccount := bson.M{
 		"email":     input.Email,
-		"password":  input.Password,
+		"password":  hashPassword,
 		"createdon": &currentTime,
 		"updatedon": &currentTime,
 	}
@@ -72,7 +85,11 @@ func (db *DB) UpdateAccount(ctx context.Context, input *model.UpdateAccount) *mo
 		update = true
 	}
 	if input.Password != nil {
-		updateAccount["password"] = input.Password
+		hashPassword, err := utils.HashPassword(*input.Password)
+		if err != nil {
+			log.Fatalf("Unexpected error when hashing password")
+		}
+		updateAccount["password"] = hashPassword
 		update = true
 	}
 
