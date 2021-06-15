@@ -70,7 +70,6 @@ input UpdateAccount {
 }
 
 type Mutation {
-  createUser(input: NewUser): User!
   createAccount(input: NewAccount): Account!
   updateUser(input: UpdateUser): User!
   updateAccount(input: UpdateAccount): Account!

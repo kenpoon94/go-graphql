@@ -17,43 +17,8 @@ import (
 
 var db = database.Connect()
 
-// Internal call only 
-func (r *mutationResolver) CreateUser(ctx context.Context, input *model.NewUser) (*model.User, error) {
-	currentTime := time.Now().String()
-	newUser := &model.NewUser{
-		Name:      input.Name,
-		Jobtitle:  input.Jobtitle,
-		City:      input.City,
-		Age:       input.Age,
-		Hobbies:   input.Hobbies,
-		CreatedOn: &currentTime,
-		UpdatedOn: &currentTime,
-	}
-	return db.CreateUser(newUser), nil
-}
-
 func (r *mutationResolver) CreateAccount(ctx context.Context, input *model.NewAccount) (*model.Account, error) {
-	currentTime := time.Now().String()
-	fields := bson.M{
-		"email": input.Email,
-		"password": input.Password,
-		"createdon": &currentTime,
-		"updatedon": &currentTime,
-	}
-
-	accountId := db.CreateAccount(fields)
-
-	newUser := &model.NewUser{
-		Name:      input.Name,
-		Jobtitle:  input.Jobtitle,
-		City:      input.City,
-		Age:       input.Age,
-		Hobbies:   input.Hobbies,
-		AccountID: &accountId,
-		CreatedOn: &currentTime,
-		UpdatedOn: &currentTime,
-	}
-	db.CreateUser(newUser)
+	accountId := db.CreateAccount(input)
 	return &model.Account{
 		ID: accountId,
 	}, nil
@@ -61,7 +26,7 @@ func (r *mutationResolver) CreateAccount(ctx context.Context, input *model.NewAc
 
 func (r *mutationResolver) UpdateUser(ctx context.Context, input *model.UpdateUser) (*model.User, error) {
 	update := false
-	var fields = bson.M{}
+	fields := bson.M{}
 	if !primitive.IsValidObjectID(input.ID) {
 		graphql.AddErrorf(ctx, "ID is not a valid primitive.ObjectID")
 	}
@@ -99,7 +64,7 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, input *model.UpdateUs
 
 func (r *mutationResolver) UpdateAccount(ctx context.Context, input *model.UpdateAccount) (*model.Account, error) {
 	update := false
-	var fields = bson.M{}
+	fields := bson.M{}
 	if !primitive.IsValidObjectID(input.ID) {
 		graphql.AddErrorf(ctx, "ID is not a valid primitive.ObjectID")
 	}
@@ -148,6 +113,7 @@ func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResol
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
-type mutationResolver struct{ *Resolver }
-type queryResolver struct{ *Resolver }
-
+type (
+	mutationResolver struct{ *Resolver }
+	queryResolver    struct{ *Resolver }
+)
