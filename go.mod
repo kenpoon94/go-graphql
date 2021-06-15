@@ -9,4 +9,5 @@ require (
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/vektah/gqlparser/v2 v2.1.0 // indirect
 	go.mongodb.org/mongo-driver v1.5.3 // indirect
+	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 )
